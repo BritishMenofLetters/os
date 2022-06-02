@@ -1,0 +1,78 @@
+Lab 7: OVS
+1. Open ssh client (e.g. putty.exe), connect to your host and switch to root user
+
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+• type: sudo su –
+• password: oposum22oposum
+
+2. Create OVS OpenFlow switch named with your “<name>_first_letter_surname”
+
+• create your OpenFlow switch
+• type: ovs-vsctl add-br <name>_first_letter_surname
+• check if OpenFlow switch is created
+• type: ovs-vsctl list-br
+• check your OpenFlow switch ports
+• type: ovs-ofctl show <name>_first_letter_surname
+• what is automatically created OpenFlow switch port?
+• ______________________________
+• check your OpenFlow switch flow table
+• type: ovs-ofctl dump-flows <name>_first_letter_surname
+• What action is stated in the printout? What is its meaning?
+• ________________________________________________
+• check data-path ports
+• type: ovs-dpctl show
+• What is your local port number?
+• _________________________________________
+• Check the OpenFlow switch fdb (forwarding) table
+• type: ovs-appctl fdb/show <name>_first_letter_surname
+• What is the printout? Why?
+• __________________________________________________
+• Check the data-path flow table
+• type: ovs-dpctl dump-flows
+• What is the printout? Why as such?
+• _______________________________________________
+
+3. Create STAR OpenFlow switch and attach ens224 interface to it
+
+• type: ovs-vsctl add-br STAR
+• type: ovs-vsctl add-port STAR ens224
+• type: ip link set ens224 up
+
+4. Connect your OpenFlow switch to STAR OpenFlow switch
+
+• create veth pair (virtual patch cable) towards OpenFlow switch STAR
+• type: ip link add veth<MY_NAME>ToSTAR type veth peer name
+vethSTARTo<MY_NAME>
+• type: ip link set veth<MY_NAME>ToSTAR up
+• type: ip link set vethSTARTo<MY_NAME> up
+• type: ovs-vsctl add-port <name>_first_letter_surname veth<MY_NAME>ToSTAR
+• type: ovs-vsctl add-port STAR vethSTARTo<MY_NAME>
+• type: ovs-vsctl show to check ports are added to OpenFlow switches
+
+5. Configure STAR local interface ip address to 192.168.1.X/24 (X=1 for os-1, X=2 for os-2)
+
+• type: ip address add 192.168.1.X/24 dev STAR
+• type: ip link set STAR up
+• ping remote STAR ip address
+• type: ping 192.168.1.X (X=1 for os-2, X=2 for os-1)
+• Is ping successful? Why?
+• ___________________________________________________
+• Check STAR OpenFlow switch fdb (forwarding) table
+• type: ovs-appctl fdb/show STAR
+• What is the meaning of the printout?
+• __________________________________________________
+• Check your OpenFlow switch fdb (forwarding) table
+• type: ovs-appctl fdb/show <name>_first_letter_surname
+• What is the meaning of the printout?
+• __________________________________________________
+• Check the data-path flow table
+• type: ovs-dpctl dump-flows
+• What does the printout show?
+• _______________________________________________
+
+6. Remove veth pair and related OpenFlow switch ports
+• type: ip link del veth<MY_NAME>ToSTAR
+• type: ovs-vsctl del-port <name>_first_letter_surname veth<MY_NAME>ToSTAR
+• type: ovs-vsctl del-port STAR vethSTARTo<MY_NAME> 
