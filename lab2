@@ -1,0 +1,84 @@
+Lab 2: Networking basics
+1. Open ssh client (e.g. putty.exe) and connect to your host
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+
+2. Display your host network interfaces
+
+• type: ip link show
+• How many interfaces exist on your host?
+• ____________________
+
+3. Display your interfaces ip configuration
+
+• type: ip address show
+• what is your ens160 interface L2 (MAC) address?
+• _____________________________
+• what is your ens160 interface L3 (ip) address?
+• ______________________________
+
+4. Display your host routing table
+• type: ip route show
+• what is your host default gateway?
+• ____________________________
+• What are your directly connected networks?
+• _____________________________
+
+5. Display your host arp cache
+
+• type: ip neigh show
+• what info does this command provide?
+• ______________________________________
+
+6. Display your host open transport listening ports
+
+• type: netstat -tulpn
+• Can you name some of the traffic connections that your host allows?
+• _______________________________________
+• What is the meaning of “-tulpn” in the command?
+• _______________________________________
+
+7. Start new program for incoming transport connections
+
+• Start iperf3 simulator as a server,
+• type: iperf3 -s -p 520x (x=2,3,…)
+• display your host open transport listening ports and find iperf3 process (use 2nd terminal
+window)
+• what is your iperf3 PID?
+• ___________
+• what is your iperf3 listening port and ip address?
+• ____________
+• (Re)start iperf3 simulator as a server and bind it to one local interface (ip address), type:
+iperf3 -s -B 10.22.33.X -p 520x (x=2,3,…)
+• display your host open transport listening ports and find iperf3 process
+• what is iperf3 listening port and ip address?
+• ___________________
+• stop iperf3
+
+8. Check established TCP connections
+
+• start iperf3 simulator as a server and bind it to one local interface (ip address)
+• type: iperf3 -s -B 10.22.33.X -p 520x (X=134,135; x=2,3,…)
+• start iperf3 as a client (using 2nd terminal window) to send tcp segments
+• type: iperf3 -t 60 -c 10.22.33.X
+• Is the connection established? Why?
+• __________________________________
+• start iperf3 now with correct input (write down the used command)
+• __________________________________
+• check established tcp connections (in 3rd terminal window)
+• type: netstat -nat
+• what is the local/foreign ip address and port of the iperf3 established tcp
+connections?
+• _____________________________________
+
+9. Check established UDP connections
+
+• (re)start iperf3 as a client to send udp datagrams
+• append -u to the command used to send tcp segments
+• check established udp connections
+• type: netstat -nau
+• what is the local/foreign ip address and port of the iperf3 established udp
+connection?
+• _____________________________________
+• stop iperf3 and close terminal window
