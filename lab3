@@ -1,0 +1,57 @@
+Lab 3: HW IRQs
+
+1. Open ssh client (e.g. putty.exe), connect to your host and switch to root user
+
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+• type: sudo su –
+• password: oposum22oposum
+
+2. Check HW IRQ statistics
+
+• type: cat /proc/interrupts
+• What are rx (input) and tx (output) IRQs of the ens192 device?
+• __________________________________
+• on which CPU core the ISR is handling packets coming from ens192 (repeat cat
+/proc/interrupts several times to see which counters are increasing)?
+• _____________________
+
+3. Check and modify CPU affinity of the ens192-rxtx-Z (ens160-rxtx-Z, ens224-rxtx-Z) (Z=0-7)
+interrupt to run on CPU1 (i.e. 2nd CPU)
+
+• check the current CPU affinity
+• type: cat /proc/irq/<irq_number>/smp_affinity
+• ____________________________
+• change the cpu affinity
+• use command: echo [hex_cpu_mask] > /proc/irq/<irq_number>/smp_affinity
+• check HW IRQ statistics again (type: cat /proc/interrupts)
+• Is new configuration applied?
+• ___________
+• stop irqbalance deamon
+• type: service irqbalance status to check the irqbalance status and if not
+active/running:
+• type: service irqbalance stop
+• repeat the change the cpu affinity command from 2
+nd bullet
+• Is new configuration applied?
+• ____________
+
+4. Check and modify IC of your NIC ens192
+
+• type: ethtool -c ens192
+• what is the value of rx-usecs and tx-usecs timers?
+• _______________
+• Change IC timer for ens192
+• type: ethtool -C ens192 rx-usecs 125
+• Did you successfully change rx/tx-usecs timers? Why?
+• ____________________________________________
+
+5. Check and modify ring buffer size of your NIC ens192
+
+• type: ethtool -g ens192
+• How many rx/tx descriptors does you NIC have?
+• _______________
+• ethtool -G ens192 rx 2048
+• Did you successfully change ring buffer size? Why?
+• ___________________________________________
