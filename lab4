@@ -1,0 +1,41 @@
+Lab 4: Soft IRQs
+
+1.
+Open ssh client (e.g. putty.exe), connect to your host and switch to root user
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+• type: sudo su –
+• password: oposum22oposum
+
+2. Check running ksoftirqd threads for soft IRQ processing
+
+• type: ps -ef | grep ksof
+• How many ksoftirqd threads exists?
+• ___________
+• Why that many?
+• _________________________________
+
+3. Check soft IRQ statistics on you host
+
+• type: cat /proc/softirqs
+• How many soft IRQs exist on your host?
+• ______________________
+• What are the network processing soft IRQs?
+• ______________________
+
+4. Check net_rx_action statistics
+
+• type: cat /proc/net/softnet_stat
+• How many rows are there in the printout? Why that many?
+• ________________________________________________
+• Which CPUs are handling network traffic?
+• _______________________
+
+5.
+Applying the knowledge from this and previous exercises, configure network interface ens224
+with ip address 192.168.1.1/29 (os-1), 192.168.1.1/29 (os-2) and configure protocol data
+processing (receive path) coming to this interface to run on CPU4 only. Set the interface ens224
+ring buffer size to 2048 both for rx and tx descriptors. Ensure no traffic is handled by interface
+ens160 (i.e. set it to down), while the traffic coming to interface ens192 is handled by CPU0.
+Check that configuration is applied. Write down the commands you have used.
