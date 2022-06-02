@@ -1,0 +1,57 @@
+Lab 5: RSS and RPS
+
+1. Open ssh client (e.g. putty.exe), connect to your host and switch to root user
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+• type: sudo su –
+• password: oposum22oposum
+
+2. Manipulate NIC transmit/receive queue number
+
+• check number of queues for the interface ens160
+• type: ethtool -l ens160
+• current number of transmit/receive queues is ______________
+• change the number of transmit/receive queues to 4
+• type: ethtool -L ens160 [rx][tx][combined] 4
+• Was the change successful?
+• ____________
+• What could be the reason for this?
+• __________________________________________________
+
+3. Manipulate RSS hash functions for the flows
+
+• Check which fields are used for UDP RX flow hash of the interface ens160
+• type: ethtool -n ens160 rx-flow-hash udp4
+• Was the check successful?
+• ____________
+• What could be the reason for this?
+• __________________________________________________
+
+4. Adjusting the processing weight of RX queues
+• Check the RX flow indirection table for the interface ens160
+• type: ethtool -x ens160
+• What is the meaning of the printout?
+• ____________________________________________________
+• change the weight for the traffic to be spread among 2 queues equally
+• type: ethtool -X ens160 equal 2
+• Revert the configuration back to initial one
+• write down the used command
+• ___________________________
+
+5. Manipulate RPS for the interface
+
+• check number of queues for the interface ens160
+• type: ls /sys/class/net/ens160/queues
+• check if RPS is enabled for the interface
+• type: cat /sys/class/net/ens160/queues/<queue>/rps_cpus
+• Which <queue> did you use?
+• ______
+• What other queue you could have used?
+• _____________________________________________
+
+6. Applying the knowledge of this and previous exercises, change network traffic for ens192
+interface “top half” and “bottom half” to run on cpu0, while further kernel packet
+processing to run on cpu1. Set other two interfaces (ens160 and ens224) to down. Check
+that the configuration is applied. Write down the commands you have used. Note that
+rps_cpus represents bit mask for the cpus (cores) available in the system
