@@ -1,0 +1,86 @@
+Lab 1: Linux Processes
+1. Open ssh client (e.g. putty.exe) and connect to your host
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+
+2. Find process id (PID) and parent process id (PPID) of your console
+
+• type ps -f [enter]
+• Console (bash) process id is ________
+• How many processes are listed?
+________
+• What is the parent (PPID) process of your “ps -f” process?
+_______________________________________________
+
+3. Start an endless loop process to run in background as follows:
+
+• type while :; do :; done & [enter]
+
+4. Find the endless loop process id and parent process id
+
+• type top [enter]
+• press “f”
+• using arrows scroll down to PPID
+• press “space” followed by “ESC”
+• endless loop process is the one with highest %CPU consumption
+• PID: ______
+• PPID: ______
+
+5. Find cpu affinity mask of the running endless loop process
+
+• type taskset -p [PID] [enter]
+• cpu affinity mask is _______
+
+6. Find last used cpu by the running endless loop process
+
+• type top [enter]
+• press “f”
+• using arrows scroll down to p
+• press “space” followed by “escape”
+• For 1 minute, observe the p printout for the endless loop process and write used cpus
+_______________________
+
+7. Set endless loop process to run only on 1
+st and 3rd cpu
+
+• type taskset 5 -p 5 [PID] [enter]
+
+8. Repeat step 6
+
+• Observe the p printout for the endless loop process and write used cpus
+_______________________
+
+9. Set endless loop process to run only on 3rd cpu
+
+• write the used command
+_____________________
+
+10. Start another endless loop process to run in background
+
+• check PID, PPID and cpu mask of the new endless loop process
+• PID: ______
+• PPID: ______
+• cpu mask: ____
+
+11. Kill the second endless loop process
+
+• type kill -9 [PID] [enter]
+
+12. Check the process is no longer running
+
+13. Move the first endless loop process to run in foreground
+
+• type jobs [enter] and find the job id
+• type fg [job_id] [enter]
+• press “CTRL+c” to stop the process
+
+14. Find the “the "parent of all processes” process
+
+• start the endless loop process to run in background
+• find the endless loop process [PID] and [PPID]
+• type ps -fp [PPID]
+• repeat previous step for each [PPID]
+• write the [PID] of the "parent of all processes” process
+_______
+• end the endless loop process
