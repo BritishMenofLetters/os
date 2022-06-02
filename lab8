@@ -1,0 +1,103 @@
+Lab 8: Working with VMs
+1. Open ssh client (e.g. putty.exe), connect to your host and switch to root user
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+• type: sudo su –
+• password: oposum22oposum
+
+2. Create your personal VM named with your “<name>_first_letter_surname”
+• Go to vm image location
+• type: cd /home/ubuntu/vm_image
+• Create your vm folder
+• type: mkdir <name>_first_letter_surname
+• Copy cirros-0.3.3-x86_64-disk.img to your vm folder
+• type: cp /home/ubuntu/vm_image/cirros-0.3.3-x86_64-disk.img
+/home/ubuntu/vm_image/<name>_first_letter_surname/cirros-0.3.3-x86_64-
+disk.img
+• copy vm_libvirt.xml to your vm folder
+• type: cp /home/ubuntu/vm_image/vm_libvirt.xml
+/home/ubuntu/vm_image/<name>_first_letter_surname /vm_libvirt.xml
+• open vm_libvirt.xml and change domain name to <name>_first_letter_surname, uuid to unique
+uuid, source bridge to <my_switch_name> and interface MAC address to unique address
+• type: vi /home/ubuntu/vm_image/<name>_first_letter_surname/vm_libvirt.xml
+• change <name>cirros</name> to <name><my_name>_first_letter_surname</name>
+• position to “c” of “cirros”
+• Press “Delete” until “cirros” is deleted
+• Press ‘i’
+• type: <my_name>_first_letter_surname
+• change X, Y and Z in 7642f8f9-b032-4cb7-baca-1b4317aXdY0Z as follows (use vi tool and
+commands from previous bullet):
+o X is your OS lab group
+o Y is the row you are sitting in the lab
+o Z is your placement in the row from the door
+• change X, Y and Z in 52:54:00:X1:Y1:Z6 and in 52:54:00:X1:Y1:Z7 as in previous bullet
+• change <source bridge='br-int'/> to <source bridge='<my_switch_name>'/> (two
+places!!)
+• change <source file='/…/<name>_first_letter_surname/cirros-0.3.3-x86_64-disk.img'/>
+to your <name>_first_letter_surname
+• create your VM
+• type: virsh create /home/ubuntu/vm_image/<my_name>_first_letter_surname
+/vm_libvirt.xml
+• check if your VM is created
+• type: virsh list
+• connect to your VM
+• type: virsh console <my_VM_name>
+• log-in with username cirros and password cubswin:)
+
+3. Check your VM settings (on host)
+• What are VM virtual interfaces and their MAC addresses?
+• type: virsh domiflist <my_VM_name>
+• ______________________________________________
+• What is your VM disk?
+• type: virsh domblklist <my_VM_name>
+• What is the disk size?
+• type: virsh domblkinfo <my_VM_name> hda
+• __________________________
+• What is your VM vCPU affinity and current vCPU0 and vCPU1 running physical core?
+• type: virsh vcpupin <my_VM_name>
+• ______________________________
+
+4. Change vCPU0 and vCPU1 to run on arbitrary cores only
+• type: virsh vcpupin <my_VM_name> 0 <core_id>
+• type: virsh vcpupin <my_VM_name> 1 <core_id>
+
+5. Find your VM process id (PID) and VM threads
+• type: ps -ef | grep X1:Y1:Z6 (last three hex digits of your MAC address; X, Y, Z are numbers
+entered at Task 2)
+• What your VM PID?
+• _________________
+• Check all threads of your VM process
+• type: top -H -p <my_VM_PID>
+• How many threads exist?
+• _______________________
+• On which cores are your vCPU0 and vCPU1 running?
+• press ‘f” and scroll to “p”
+• press “space” followed by “escape”
+• ___________________________
+
+6. Configure VM eth0 interface ip address as 20.X.Y.Z/8 where X, Y and Z are the same as in exercise 2.
+• type (on VM): sudo su – to switch to root user
+• type (on VM): ip address add 20.X.Y.Z/8 dev eth0
+• type (on VM): ip link set eth0 up
+• check your switch port list (on host)
+• type: ovs-ofctl show <my_switch_name>
+• What ports are in the list?
+• _______________________________________
+• To which switch port is your eth0 attached to? How can you tell?
+• ________________________________________________
+• check data-path switch ports (on host)
+• type: ovs-dpctl show
+• What ports are in the list?
+• _________________________________________
+• ping your colleague’s ip address (on VM)
+• Is ping successful? Why?
+• __________________________________________________________
+
+7. Connect your and colleague’s switches (work in pair)
+• (on host) create veth pair (virtual patch cable)
+• type (only one): ip link add veth<MY_NAME>To<COLLEAGUE_NAME> type veth peer
+name veth<COLLEAGUE_NAME>To<MY_NAME>
+• type (both): ovs-vsctl add-port <my_switch_name>
+veth<MY_NAME>To<COLLEAGUE_NAME>
+• type (both): ip link set veth<MY_NAME>To<COLLEAGUE_NAME> up
