@@ -1,0 +1,87 @@
+Lab 9: Working with VMs (2)
+1. Open ssh client (e.g. putty.exe), connect to your host and switch to root user
+• host ip address: A: 161.53.167.74, B: 161.53.167.95
+• username: ubuntu
+• password: oposum22oposum
+• type: sudo su –
+• password: oposum22oposum
+
+2. (Re)Create your personal VM named with your “<name>_first_letter_surname” (on host)
+• Your data is stored at location /home/ubuntu/vm_image/<name>_first_letter_surname
+
+3. Configure VM eth0 interface ip address as 20.X.Y.Z/8 where:
+• X is your OS lab group
+• Y is the row you are sitting in the lab
+• Z is your placement in the row from the door
+• type (on VM): sudo su – to switch to root user
+• type (on VM): ip address add 20.X.Y.Z/8 dev eth0
+• type (on VM): ip link set eth0 up
+• check your OpenFlow switch port list (on host)
+• type (on host): ovs-ofctl show <my_switch_name>
+
+4. Connect your OpenFlow switch to STAR OpenFlow switch (on host)
+• create veth pair (virtual patch cable) towards OpenFlow switch STAR
+• type: ip link add veth<MY_NAME>ToSTAR type veth peer name vethSTARTo<MY_NAME>
+• type: ovs-vsctl add-port <my_switch_name> veth<MY_NAME>ToSTAR
+• type: ovs-vsctl add-port STAR vethSTARTo<MY_NAME>
+• type: ip link set veth<MY_NAME>ToSTAR up
+• type: ip link set vethSTARTo<MY_NAME> up
+• type: ovs-vsctl show to check ports are added to OpenFlow switches
+• note: ens224 is attached to STAR OpenFlow switch
+
+5. Check the connectivity to colleague VM that resides on the same host
+• ping your colleague’s ip address (on VM)
+• Is ping successful? Why?
+• __________________________________________________________
+
+6. Check the connectivity to colleague VM that resides on different host
+• ping your colleague’s ip address (on VM)
+• Is ping successful?
+• _________
+• Troubleshoot connectivity issue (work in pair)
+• type (on both hosts): tcpdump -ni ens224 -e
+• identify your frames based on ip/MAC address
+• What is the difference in tcpdump printouts on different hosts?
+• ____________________________________________________
+
+7. Remove veth port from your switch and delete veth pair
+• type (on host): ovs-vsctl del-port <my_switch_name> veth<MY_NAME>ToSTAR
+• type (on host): ovs-vsctl del-port STAR vethSTARTo<MY_NAME>
+• type (on host): ip link del veth<MY_NAME>ToSTAR
+
+8. Destroy your VM (on host) and your VM folder
+• type: virsh destroy <my_VM_name>
+• check the VM no longer exist
+• type: virsh list
+• remove your VM folder
+• type: rm -r /home/ubuntu/vm_image/<name>_first_letter_surname
+• check your folder no longer exists
+• type: ls /home/ubuntu/vm_image/
+
+9. Destroy your OpenFlow switch (on host)
+• type: ovs-vsctl del-br <my_switch_name>
+• check the OpenFlow switch no longer exist
+• type: ovs-vsctl list-br
+
+10. From disk /home/ubuntu/vm_image/cirros-0.3.3-x86_64-disk.img and based on
+/home/ubuntu/vm_image/vm_libvirt.xml create two VMs “Jupiter_1” and “Uran_1”. Provide them an ip address from
+192.168.0.0/24 subnet and ensure their connectivity is working. Ensure HW IRQs (virtio2-input) are received from the
+vNIC handling defined ip address to vCPU1 on both VMs. Write down the commands you have used on (a) host and
+(b) VMs. Note: Mind to ensure unique MAC addresses of the VMs.
+
+11. From disk /home/ubuntu/vm_image/cirros-0.3.3-x86_64-disk.img and based on
+/home/ubuntu/vm_image/vm_libvirt.xml create two VMs “Jupiter_2” and “Uran_2” and attach them to different
+OpenFlow switches (newly created and arbitrarily named). Provide them an ip address from 192.168.1.0/24 subnet
+and ensure their connectivity is working. Write down the commands you have used on (a) host and (b) VMs. Note:
+Mind to ensure unique MAC addresses of the VMs.
+
+12. On your host there are two VMs “Jupiter_1” and “Uran_1” connected to the same OpenFlow switch. Attach
+“Jupiter_1” VM to a new OpenFlow switch (create one arbitrary named). Provide VMs ip addresses from
+192.168.2.0/24 subnet (remove any other ip address). Ensure connectivity between VMs is working. Revert VMs
+“Jupiter_1” and “Uran_1” to the same OpenFlow switch again and delete newly created OpenFlow switch. Write
+down the commands you have used on (a) host and (b) VMs.
+
+13. On your host there are two VMs “Jupiter_1” and “Uran_1”. Find “Jupiter_1” and “Uran_1” PIDs. Ensure their vCPUs
+are running solely on host CPU2. Check the configuration is applied. Find “Jupiter_1” and “Uran_1” threads. Ensure all
+other threads besides vCPU0 and vCPU1 related to “Jupiter_1” and “Uran_1” PIDs run on host CPU0. Write down the
+commands you have used
