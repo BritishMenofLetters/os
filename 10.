@@ -1,0 +1,70 @@
+10. From disk /home/ubuntu/vm_image/cirros-0.3.3-x86_64-disk.img and based on
+/home/ubuntu/vm_image/vm_libvirt.xml create two VMs “Jupiter_1” and “Uran_1”. Provide them an ip address from
+192.168.0.0/24 subnet and ensure their connectivity is working. Ensure HW IRQs (virtio2-input) are received from the
+vNIC handling defined ip address to vCPU1 on both VMs. Write down the commands you have used on (a) host and
+(b) VMs. Note: Mind to ensure unique MAC addresses of the VMs.
+cd /home/ubuntu/vm_image
+mkdir  Jupiter_1
+mkdir  Uran_1
+cp cirros-0.3.3-x86_64-disk.img Jupiter_1
+cirros-0.3.3-x86_64-disk.img Uran_1
+cp vm_libvirt.xml Jupiter_1
+cp vm_libvirt.xml Uran_1
+ovs-vsctl add-br Jup
+ovs-vsctl add-br Ur
+ovs-vsctl list-br 
+cd Jup
+vi vm_libvirt.xml
+
+
+• position to “c” of “cirros”
+• Press “Delete” until “cirros” is deleted
+• Press ‘i’
+• type: <my_name>_first_letter_surname
+• change X, Y and Z in 7642f8f9-b032-4cb7-baca-1b4317aXdY0Z as follows (use vi tool and
+commands from previous bullet):
+o X is your OS lab group
+o Y is the row you are sitting in the lab
+o Z is your placement in the row from the door
+• change X, Y and Z in 52:54:00:X1:Y1:Z6 and in 52:54:00:X1:Y1:Z7 as in previous bullet
+
+• change <source bridge='br-int'/> to <source bridge='<my_switch_name>'/> (two
+places!!)
+• change <source file='/…/<name>_first_letter_surname/cirros-0.3.3-x86_64-disk.img'/>
+to your <name>_first_letter_surname
+• create your VM
+• type: virsh create /home/ubuntu/vm_image/<my_name>_first_letter_surname
+/vm_libvirt.xml
+• check if your VM is created
+• type: virsh list
+• connect to your VM
+• type: virsh console <my_VM_name>
+• log-in with username cirros and password cubswin:)
+ESC
+:wq! Enter
+Cd Uran
+Isto I za uran(drugi c+xyz)
+Vi vm_libvirt.xml
+Virsh create vm_libvirt.xml
+virsh list (provjeraa je li napravio)
+virsh console Uran 1- cekat da se pokrene I otvoriti novi terminal
+u novi terminal uc u folder jupiter 1
+virsh create vm_libvirt.xml
+virsh list
+virsh console jup
+treci terminal
+ip link add vethUtoJ type veth peer name vethJtoU
+ovs-vsctl add-port Jupiter_1 vethJtoU
+ovs-vsctl add-port Jupiter_1 vethUtoJ
+ip l set vethJToU up
+ip l set vethUToJ up
+
+za obrisat
+virsh destroy Jup, ur
+ovs-vsctl del.br Jup, ur
+rm -r jup
+rm -r ura(uklonit direktorij
+
+
+
+
